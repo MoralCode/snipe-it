@@ -61,6 +61,7 @@ class User extends SnipeModel implements AuthenticatableContract, AuthorizableCo
         'remote',
         'start_date',
         'end_date',
+        'scim_externalid'
     ];
 
     protected $casts = [
@@ -336,6 +337,24 @@ class User extends SnipeModel implements AuthenticatableContract, AuthorizableCo
     {
         return $this->belongsToMany(\App\Models\License::class, 'license_seats', 'assigned_to', 'license_id')->withPivot('id');
     }
+
+    /**
+     * Establishes a count of all items assigned
+     *
+     * @author J. Vinsmoke
+     * @since [v6.1]
+     * @return \Illuminate\Database\Eloquent\Relations\Relation
+     */
+    Public function allAssignedCount() {
+        $assetsCount = $this->assets()->count();
+        $licensesCount = $this->licenses()->count();
+        $accessoriesCount = $this->accessories()->count();
+        $consumablesCount = $this->consumables()->count();
+        
+        $totalCount = $assetsCount + $licensesCount + $accessoriesCount + $consumablesCount;
+    
+        return (int) $totalCount;
+        }
 
     /**
      * Establishes the user -> actionlogs relationship
